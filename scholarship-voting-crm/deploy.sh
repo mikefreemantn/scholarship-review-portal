@@ -19,7 +19,7 @@ echo "================================================"
 # Build the React app
 echo ""
 echo "Building React app..."
-npm run build
+REACT_APP_VERSION=$VERSION npm run build
 
 if [ $? -ne 0 ]; then
   echo "Build failed! Aborting deployment."

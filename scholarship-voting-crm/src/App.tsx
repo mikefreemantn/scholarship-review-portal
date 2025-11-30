@@ -344,6 +344,11 @@ function MainApp({ user, onSignOut }: MainAppProps) {
           />
         )}
       </main>
+      
+      {/* Version Footer */}
+      <footer className="text-center py-4 text-xs text-gray-500">
+        v{process.env.REACT_APP_VERSION || '1.0.0'}
+      </footer>
     </div>
   );
 }
