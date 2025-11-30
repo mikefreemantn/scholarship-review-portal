@@ -1,16 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface VotingSliderProps {
   onVote: (score: number) => void;
   disabled?: boolean;
+  initialScore?: number;
+  isUpdate?: boolean;
 }
 
-export const VotingSlider: React.FC<VotingSliderProps> = ({ onVote, disabled = false }) => {
-  const [score, setScore] = useState<number>(5);
+export const VotingSlider: React.FC<VotingSliderProps> = ({ 
+  onVote, 
+  disabled = false, 
+  initialScore,
+  isUpdate = false 
+}) => {
+  const [score, setScore] = useState<number>(initialScore || 5);
   const [showConfirm, setShowConfirm] = useState(false);
   const sliderRef = useRef<HTMLInputElement>(null);
+
+  // Update score when initialScore changes (e.g., navigating between applicants)
+  useEffect(() => {
+    if (initialScore !== undefined) {
+      setScore(initialScore);
+    }
+  }, [initialScore]);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newScore = parseInt(e.target.value);
@@ -47,7 +61,9 @@ export const VotingSlider: React.FC<VotingSliderProps> = ({ onVote, disabled = f
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
-      <h3 className="text-xl font-semibold mb-6 text-primary-600">Cast Your Vote</h3>
+      <h3 className="text-xl font-semibold mb-6 text-primary-600">
+        {isUpdate ? 'Update Your Vote' : 'Cast Your Vote'}
+      </h3>
       
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
@@ -85,16 +101,16 @@ export const VotingSlider: React.FC<VotingSliderProps> = ({ onVote, disabled = f
           className="w-full bg-primary-600 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
           style={{backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 40px)'}}
         >
-          Submit Vote
+          {isUpdate ? 'Update Vote' : 'Submit Vote'}
         </button>
       ) : (
         <div className="space-y-3">
           <div className="rounded-lg p-5" style={{backgroundColor: 'rgb(249, 244, 235)', border: '2px solid rgb(211, 190, 146)'}}>
             <p className="text-base font-semibold" style={{color: '#2d4a3e'}}>
-              Confirm your vote of <span className="font-bold text-xl">{score}/10</span>?
+              {isUpdate ? 'Update' : 'Confirm'} your vote of <span className="font-bold text-xl">{score}/10</span>?
             </p>
             <p className="text-sm mt-2" style={{color: '#5a8062'}}>
-              This action cannot be undone.
+              {isUpdate ? 'This will replace your previous vote.' : 'This action cannot be undone.'}
             </p>
           </div>
           

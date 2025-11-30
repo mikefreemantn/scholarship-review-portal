@@ -478,16 +478,22 @@ export const VotingReview: React.FC<VotingReviewProps> = ({
       </div>
 
       {/* Voting Section */}
-      {!currentApplicantWithStats.userHasVoted ? (
-        <VotingSlider onVote={handleVote} disabled={isSubmitting} />
-      ) : (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-          <div className="text-green-600 font-semibold mb-2">✓ You've already voted on this applicant</div>
-          {averageScore !== undefined && (
-            <div className="text-gray-700">Average Score: <span className="font-bold text-lg">{averageScore.toFixed(1)}</span></div>
-          )}
-        </div>
-      )}
+      <div>
+        {currentApplicantWithStats.userHasVoted && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-center">
+            <div className="text-blue-700 font-semibold mb-1">
+              ✓ You've already voted on this applicant (Score: {currentApplicantWithStats.userVote?.score})
+            </div>
+            <div className="text-sm text-blue-600">You can update your vote below</div>
+          </div>
+        )}
+        <VotingSlider 
+          onVote={handleVote} 
+          disabled={isSubmitting}
+          initialScore={currentApplicantWithStats.userVote?.score}
+          isUpdate={currentApplicantWithStats.userHasVoted}
+        />
+      </div>
 
       {/* Navigation */}
       <div className="flex justify-between gap-2 sm:gap-4">
