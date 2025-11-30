@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MessageCircle, Send, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ApplicantWithStats, VideoSubmission } from '../types';
@@ -24,6 +25,7 @@ export const VotingReview: React.FC<VotingReviewProps> = ({
   onVoteSubmitted,
   initialApplicantId,
 }) => {
+  const navigate = useNavigate();
   const [currentApplicantId, setCurrentApplicantId] = useState<string | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -240,7 +242,8 @@ export const VotingReview: React.FC<VotingReviewProps> = ({
 
   const handleNext = () => {
     if (currentIndexInAll < applicantsWithStats.length - 1) {
-      setCurrentApplicantId(applicantsWithStats[currentIndexInAll + 1].applicant.applicantId);
+      const nextApplicantId = applicantsWithStats[currentIndexInAll + 1].applicant.applicantId;
+      navigate(`/voting/${nextApplicantId}`);
       setChatMessages([]); // Reset chat for new applicant
       setChatInput('');
     }
@@ -248,7 +251,8 @@ export const VotingReview: React.FC<VotingReviewProps> = ({
 
   const handlePrevious = () => {
     if (currentIndexInAll > 0) {
-      setCurrentApplicantId(applicantsWithStats[currentIndexInAll - 1].applicant.applicantId);
+      const prevApplicantId = applicantsWithStats[currentIndexInAll - 1].applicant.applicantId;
+      navigate(`/voting/${prevApplicantId}`);
       setChatMessages([]); // Reset chat for new applicant
       setChatInput('');
     }
