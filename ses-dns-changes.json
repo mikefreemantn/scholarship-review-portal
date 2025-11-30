@@ -1,0 +1,43 @@
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "mznnpddvh3phsmh4k7bzyghglu2meer6._domainkey.onemoredayontheatapply.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "mznnpddvh3phsmh4k7bzyghglu2meer6.dkim.amazonses.com"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "7hj6tiryn7qrexvhz5s2zvb7e6zv5slm._domainkey.onemoredayontheatapply.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "7hj6tiryn7qrexvhz5s2zvb7e6zv5slm.dkim.amazonses.com"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "fimnnu3issb5ruhm3c4dtshbv3l2qzt6._domainkey.onemoredayontheatapply.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "fimnnu3issb5ruhm3c4dtshbv3l2qzt6.dkim.amazonses.com"
+          }
+        ]
+      }
+    }
+  ]
+}

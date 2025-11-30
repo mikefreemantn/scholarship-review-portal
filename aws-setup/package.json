@@ -1,0 +1,13 @@
+{
+  "name": "scholarship-crm-aws-setup",
+  "version": "1.0.0",
+  "description": "AWS setup scripts for Scholarship Voting CRM",
+  "scripts": {
+    "import-applicants": "node import-applicants.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "csv-parser": "^3.0.0",
+    "uuid": "^9.0.1"
+  }
+}

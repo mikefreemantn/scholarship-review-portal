@@ -1,0 +1,7 @@
+{
+  "MailType": "TRANSACTIONAL",
+  "WebsiteURL": "https://voting.onemoredayontheatapply.com",
+  "UseCaseDescription": "We operate the One More Day on the Appalachian Trail Memorial Scholarship review portal. We need to send transactional emails to our scholarship review board members, including:\n\n1. Welcome emails with login credentials when board members are invited (estimated 10-20 recipients)\n2. Voting reminder emails to board members about pending applicant reviews\n3. Administrative notifications to the review board\n\nAll emails are permission-based and sent only to board members who have explicitly joined our review process. We maintain a small, curated list of recipients (typically 10-20 people) and send infrequent transactional notifications related to the scholarship review process.\n\nWe have proper bounce and complaint handling in place and will monitor our sending reputation carefully. Our domain onemoredayontheatapply.com is verified and we are committed to following AWS SES best practices.",
+  "AdditionalContactEmailAddresses": [],
+  "ContactLanguage": "EN"
+}

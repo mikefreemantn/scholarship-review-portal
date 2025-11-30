@@ -1,0 +1,118 @@
+{
+  "applicants": {
+    "TableName": "ScholarshipApplicants",
+    "KeySchema": [
+      {
+        "AttributeName": "applicantId",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "applicantId",
+        "AttributeType": "S"
+      }
+    ],
+    "BillingMode": "PAY_PER_REQUEST"
+  },
+  "votes": {
+    "TableName": "ScholarshipVotes",
+    "KeySchema": [
+      {
+        "AttributeName": "voteId",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "voteId",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "applicantId",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "boardMemberEmail",
+        "AttributeType": "S"
+      }
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "ApplicantIndex",
+        "KeySchema": [
+          {
+            "AttributeName": "applicantId",
+            "KeyType": "HASH"
+          }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL"
+        }
+      },
+      {
+        "IndexName": "BoardMemberIndex",
+        "KeySchema": [
+          {
+            "AttributeName": "boardMemberEmail",
+            "KeyType": "HASH"
+          }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL"
+        }
+      }
+    ],
+    "BillingMode": "PAY_PER_REQUEST"
+  },
+  "notes": {
+    "TableName": "ScholarshipNotes",
+    "KeySchema": [
+      {
+        "AttributeName": "noteId",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "noteId",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "applicantId",
+        "AttributeType": "S"
+      }
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "ApplicantIndex",
+        "KeySchema": [
+          {
+            "AttributeName": "applicantId",
+            "KeyType": "HASH"
+          }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL"
+        }
+      }
+    ],
+    "BillingMode": "PAY_PER_REQUEST"
+  },
+  "boardMembers": {
+    "TableName": "ScholarshipBoardMembers",
+    "KeySchema": [
+      {
+        "AttributeName": "email",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "email",
+        "AttributeType": "S"
+      }
+    ],
+    "BillingMode": "PAY_PER_REQUEST"
+  }
+}

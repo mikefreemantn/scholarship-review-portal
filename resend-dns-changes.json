@@ -1,0 +1,43 @@
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "resend._domainkey.onemoredayontheatapply.com",
+        "Type": "TXT",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "\"p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrSwLElKT4pXgD2Ij7//4Si8NWO30v6SkA9Z4nMqxFIwv6WnXQWvVVXHiWeSN3kf/DAPia4uNNf607lgGAbYAhUqUVfov3RdEEP0KOkgMGlYtv/HCBajwL5Tqplf9arfV+SXntcdFIOXmH1SZQBiQbmPTTv92/nnm9mmsLc9eE9wIDAQAB\""
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "send.onemoredayontheatapply.com",
+        "Type": "MX",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "10 feedback-smtp.us-east-1.amazonses.com"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "send.onemoredayontheatapply.com",
+        "Type": "TXT",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "\"v=spf1 include:amazonses.com ~all\""
+          }
+        ]
+      }
+    }
+  ]
+}

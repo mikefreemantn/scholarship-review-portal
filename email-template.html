@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f0; }
+* { box-sizing: border-box; }
+.container { max-width: 600px; margin: 0 auto; background-color: #fff; }
+.header { 
+  background-color: #2d4a3e; 
+  padding: 40px 20px; 
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255,255,255,0.03) 10px,
+    rgba(255,255,255,0.03) 20px
+  );
+}
+.logo { color: #fff; font-size: 32px; font-weight: bold; letter-spacing: 2px; margin: 0; text-transform: uppercase; position: relative; z-index: 1; }
+.tagline { color: #d4c5a0; font-size: 14px; margin: 10px 0 0; letter-spacing: 1px; position: relative; z-index: 1; }
+.content { padding: 40px 30px; color: #333; }
+.greeting { font-size: 24px; color: #2d4a3e; margin: 0 0 20px; font-weight: bold; }
+.message { line-height: 1.8; margin: 20px 0; color: #555; }
+.credentials { 
+  background-color: #f8f8f5; 
+  border-left: 4px solid #2d4a3e; 
+  padding: 20px; 
+  margin: 30px 0; 
+  border-radius: 4px;
+}
+.credentials-title { color: #2d4a3e; font-weight: bold; margin: 0 0 15px; font-size: 16px; }
+.credential-item { margin: 10px 0; font-family: monospace; background: #fff; padding: 10px; border-radius: 4px; }
+.credential-label { color: #777; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.credential-value { color: #2d4a3e; font-weight: bold; font-size: 16px; margin-top: 5px; }
+.button { 
+  display: inline-block; 
+  background-color: #2d4a3e; 
+  color: #fff !important; 
+  padding: 15px 40px; 
+  text-decoration: none; 
+  border-radius: 4px; 
+  margin: 20px 0; 
+  font-weight: bold; 
+  letter-spacing: 1px;
+}
+.footer { 
+  background-color: #2d4a3e; 
+  color: #d4c5a0; 
+  padding: 30px; 
+  text-align: center; 
+  font-size: 12px; 
+}
+.footer-trees { 
+  height: 60px; 
+  background: linear-gradient(to bottom, transparent, #1a2e24); 
+  margin-bottom: 20px; 
+}
+.memorial { color: #d4c5a0; font-style: italic; margin: 15px 0; font-size: 14px; }
+.memorial-name { color: #fff; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">ONE MORE DAY</div>
+    <div class="tagline">ON THE APPALACHIAN TRAIL</div>
+  </div>
+  
+  <div class="content">
+    <p class="greeting">Welcome to the Review Board!</p>
+    
+    <p class="message">
+      You have been invited to join the One More Day on the AT scholarship review board. 
+      We are honored to have you help us select this year's scholarship recipient.
+    </p>
+    
+    <p class="message">
+      As a board member, you will review applicant profiles, watch their video submissions, 
+      share notes with other board members, and vote on each applicant using a 0-10 scale.
+    </p>
+    
+    <div class="credentials">
+      <div class="credentials-title">Your Login Credentials</div>
+      <div class="credential-item">
+        <div class="credential-label">Username</div>
+        <div class="credential-value">{username}</div>
+      </div>
+      <div class="credential-item">
+        <div class="credential-label">Temporary Password</div>
+        <div class="credential-value">{####}</div>
+      </div>
+    </div>
+    
+    <p class="message">
+      Click the button below to access the review portal. You'll be prompted to change 
+      your password on first login.
+    </p>
+    
+    <center>
+      <a href="http://voting.onemoredayontheatapply.com" class="button">ACCESS REVIEW PORTAL</a>
+    </center>
+    
+    <p class="message">
+      If you have any questions about the review process, please don't hesitate to reach out.
+    </p>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-trees"></div>
+    <div class="memorial">
+      In Memory of <span class="memorial-name">Nate Loftis</span> (1981 - 2019)
+    </div>
+    <p>Honoring his memory by helping hikers achieve their dreams on the Appalachian Trail</p>
+    <p style="margin-top:20px;color:#999">onemoredayontheatapply.com</p>
+  </div>
+</div>
+</body>
+</html>

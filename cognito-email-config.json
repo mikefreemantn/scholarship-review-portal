@@ -1,0 +1,7 @@
+{
+  "AllowAdminCreateUserOnly": true,
+  "InviteMessageTemplate": {
+    "EmailSubject": "One More Day on the AT - Review Board Invitation",
+    "EmailMessage": "ONE MORE DAY ON THE APPALACHIAN TRAIL\nScholarship Review Board\n\n----------------------------------------\n\nWelcome to the Review Board!\n\nYou have been invited to join the One More Day on the AT scholarship review board. We are honored to have you help us select this year's scholarship recipient.\n\nAs a board member, you will:\n  - Review applicant profiles\n  - Watch video submissions\n  - Share notes with other board members\n  - Vote on each applicant (0-10 scale)\n\n\nYOUR LOGIN CREDENTIALS\n\nUsername: {username}\nTemporary Password: {####}\n\n\nACCESS THE REVIEW PORTAL\n\nhttp://voting.onemoredayontheatapply.com\n\nYou'll be prompted to change your password on first login.\n\nIf you have any questions about the review process, please don't hesitate to reach out.\n\n\n----------------------------------------\n\nIn Memory of Nate Loftis (1981-2019)\nHonoring his memory by helping hikers achieve their dreams on the Appalachian Trail\n\nonemoredayontheatapply.com"
+  }
+}

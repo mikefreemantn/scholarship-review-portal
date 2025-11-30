@@ -1,0 +1,6 @@
+{
+  "name": "ai-chat-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for AI chat with applicant context",
+  "main": "index.js"
+}

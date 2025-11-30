@@ -1,0 +1,7 @@
+{
+  "name": "lambda-send-email",
+  "version": "1.0.0",
+  "description": "Lambda function to send emails via SendGrid",
+  "main": "index.js",
+  "dependencies": {}
+}
