@@ -1,0 +1,98 @@
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
+import { fetchAuthSession } from 'aws-amplify/auth';
+import { awsRegion } from '../aws-config';
+
+const USER_POOL_ID = process.env.REACT_APP_USER_POOL_ID || '';
+
+let cognitoClient: CognitoIdentityServiceProvider | null = null;
+
+async function getCognitoClient(): Promise<CognitoIdentityServiceProvider> {
+  if (cognitoClient) {
+    return cognitoClient;
+  }
+
+  const session = await fetchAuthSession();
+  const credentials = session.credentials;
+
+  if (!credentials) {
+    throw new Error('No credentials available');
+  }
+
+  cognitoClient = new CognitoIdentityServiceProvider({
+    region: awsRegion,
+    credentials: {
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.secretAccessKey,
+      sessionToken: credentials.sessionToken,
+    },
+  });
+
+  return cognitoClient;
+}
+
+export async function inviteBoardMember(email: string, name: string): Promise<string> {
+  const client = await getCognitoClient();
+  
+  // Generate a temporary password
+  const tempPassword = Math.random().toString(36).slice(-10) + 'Aa1!';
+  
+  // Create user with temp password in FORCE_CHANGE_PASSWORD state
+  await client.adminCreateUser({
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+    UserAttributes: [
+      { Name: 'email', Value: email },
+      { Name: 'email_verified', Value: 'true' },
+      { Name: 'name', Value: name },
+    ],
+    TemporaryPassword: tempPassword,
+    MessageAction: 'SUPPRESS', // Don't send Cognito's default email
+  }).promise();
+  
+  return tempPassword;
+}
+
+export async function sendPasswordSetupLink(email: string): Promise<void> {
+  // This will be called from the frontend using AWS Amplify's resetPassword
+  // We just need to import it in the component
+  const { resetPassword } = await import('aws-amplify/auth');
+  await resetPassword({ username: email.toLowerCase() });
+}
+
+export async function resetBoardMemberPassword(email: string): Promise<string> {
+  const client = await getCognitoClient();
+  
+  // Generate a new permanent password
+  const password = Math.random().toString(36).slice(-10) + 'Aa1!';
+  
+  // Reset the user's password
+  await client.adminSetUserPassword({
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+    Password: password,
+    Permanent: true,
+  }).promise();
+  
+  return password;
+}
+
+export async function adminSetUserPassword(email: string, password: string): Promise<void> {
+  const client = await getCognitoClient();
+  
+  // Set a specific password for the user (permanent, no force change)
+  await client.adminSetUserPassword({
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+    Password: password,
+    Permanent: true,
+  }).promise();
+}
+
+export async function removeBoardMemberFromCognito(email: string): Promise<void> {
+  const client = await getCognitoClient();
+  
+  await client.adminDeleteUser({
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+  }).promise();
+}
