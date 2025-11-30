@@ -48,8 +48,18 @@ function App() {
               services={{
                 async handleSignIn(formData) {
                   const { username, password } = formData;
-                  // Convert username to lowercase for case-insensitive login
-                  return signIn({ username: username.toLowerCase(), password });
+                  try {
+                    // Convert username to lowercase for case-insensitive login
+                    return await signIn({ username: username.toLowerCase(), password });
+                  } catch (error: any) {
+                    // Provide clearer error messages
+                    if (error.name === 'UserNotFoundException') {
+                      throw new Error('Account not found. Please contact an administrator.');
+                    } else if (error.name === 'NotAuthorizedException') {
+                      throw new Error('Incorrect username or password.');
+                    }
+                    throw error;
+                  }
                 },
               }}
               components={{
