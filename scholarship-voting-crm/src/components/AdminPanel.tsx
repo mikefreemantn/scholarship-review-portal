@@ -84,24 +84,50 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setIsLoading(true);
 
     try {
-      // Create user in Cognito with temp password (FORCE_CHANGE_PASSWORD state)
-      const tempPassword = await inviteBoardMember(newMemberEmail, newMemberName);
+      // Check if user already exists in Cognito
+      const { getCognitoUser } = await import('../services/cognito');
+      const existingUser = await getCognitoUser(newMemberEmail);
       
-      // Add to DynamoDB
-      await createBoardMember({
-        email: newMemberEmail,
-        name: newMemberName,
-        isAdmin: false,
-      });
+      let tempPassword: string;
+      
+      if (existingUser) {
+        // User exists in Cognito, just add to DynamoDB and reset password
+        const { resetBoardMemberPassword } = await import('../services/cognito');
+        tempPassword = await resetBoardMemberPassword(newMemberEmail);
+        
+        // Get name from Cognito if available
+        const nameAttr = existingUser.UserAttributes?.find((attr: any) => attr.Name === 'name');
+        const cognitoName = nameAttr?.Value || newMemberName;
+        
+        // Add to DynamoDB
+        await createBoardMember({
+          email: newMemberEmail,
+          name: cognitoName,
+          isAdmin: false,
+        });
+        
+        setSuccess(`User ${cognitoName} already existed in Cognito. Added to board members and sent new credentials.`);
+      } else {
+        // Create new user in Cognito with temp password (FORCE_CHANGE_PASSWORD state)
+        tempPassword = await inviteBoardMember(newMemberEmail, newMemberName);
+        
+        // Add to DynamoDB
+        await createBoardMember({
+          email: newMemberEmail,
+          name: newMemberName,
+          isAdmin: false,
+        });
+        
+        setSuccess(`Invited ${newMemberName} successfully!`);
+      }
 
       // Send welcome email with temp password
       const emailSent = await sendWelcomeEmail(newMemberEmail, newMemberName, tempPassword);
       
-      if (emailSent) {
-        setSuccess(`Invited ${newMemberName} successfully! They will receive an email with setup instructions.`);
-      } else {
-        setSuccess(`Invited ${newMemberName} successfully, but failed to send email. They can use 'Forgot Password' to set up their account.`);
+      if (!emailSent) {
+        setSuccess(prev => prev + ' (Email failed to send - they can use "Forgot Password")');
       }
+      
       setNewMemberEmail('');
       setNewMemberName('');
       await loadBoardMembers();
