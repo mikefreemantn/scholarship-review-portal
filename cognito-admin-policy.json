@@ -4,8 +4,10 @@
     {
       "Effect": "Allow",
       "Action": [
+        "cognito-idp:AdminCreateUser",
         "cognito-idp:AdminDeleteUser",
         "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminSetUserPassword",
         "cognito-idp:ListUsers"
       ],
       "Resource": "arn:aws:cognito-idp:us-east-2:296062572725:userpool/us-east-2_lJhbOMow0"

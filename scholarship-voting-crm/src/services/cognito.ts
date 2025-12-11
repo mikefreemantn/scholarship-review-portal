@@ -33,6 +33,9 @@ async function getCognitoClient(): Promise<CognitoIdentityServiceProvider> {
 export async function inviteBoardMember(email: string, name: string): Promise<string> {
   const client = await getCognitoClient();
   
+  // Normalize email to lowercase to match login behavior
+  const normalizedEmail = email.toLowerCase();
+  
   // Generate a temporary password
   const tempPassword = Math.random().toString(36).slice(-10) + 'Aa1!';
   
@@ -40,9 +43,9 @@ export async function inviteBoardMember(email: string, name: string): Promise<st
     // Create user with temp password in FORCE_CHANGE_PASSWORD state
     await client.adminCreateUser({
       UserPoolId: USER_POOL_ID,
-      Username: email,
+      Username: normalizedEmail,
       UserAttributes: [
-        { Name: 'email', Value: email },
+        { Name: 'email', Value: normalizedEmail },
         { Name: 'email_verified', Value: 'true' },
         { Name: 'name', Value: name },
       ],
@@ -53,7 +56,7 @@ export async function inviteBoardMember(email: string, name: string): Promise<st
     return tempPassword;
   } catch (error: any) {
     if (error.code === 'UsernameExistsException') {
-      throw new Error(`User ${email} already exists in Cognito. If they're not showing in the admin panel, there may be a sync issue. Try using "Resend Invite" if they appear in the list, or contact support.`);
+      throw new Error(`User ${normalizedEmail} already exists in Cognito. If they're not showing in the admin panel, there may be a sync issue. Try using "Resend Invite" if they appear in the list, or contact support.`);
     }
     throw error;
   }
@@ -69,13 +72,16 @@ export async function sendPasswordSetupLink(email: string): Promise<void> {
 export async function resetBoardMemberPassword(email: string): Promise<string> {
   const client = await getCognitoClient();
   
+  // Normalize email to lowercase
+  const normalizedEmail = email.toLowerCase();
+  
   // Generate a new permanent password
   const password = Math.random().toString(36).slice(-10) + 'Aa1!';
   
   // Reset the user's password
   await client.adminSetUserPassword({
     UserPoolId: USER_POOL_ID,
-    Username: email,
+    Username: normalizedEmail,
     Password: password,
     Permanent: true,
   }).promise();
@@ -86,10 +92,13 @@ export async function resetBoardMemberPassword(email: string): Promise<string> {
 export async function adminSetUserPassword(email: string, password: string): Promise<void> {
   const client = await getCognitoClient();
   
+  // Normalize email to lowercase
+  const normalizedEmail = email.toLowerCase();
+  
   // Set a specific password for the user (permanent, no force change)
   await client.adminSetUserPassword({
     UserPoolId: USER_POOL_ID,
-    Username: email,
+    Username: normalizedEmail,
     Password: password,
     Permanent: true,
   }).promise();
@@ -98,10 +107,13 @@ export async function adminSetUserPassword(email: string, password: string): Pro
 export async function getCognitoUser(email: string): Promise<any> {
   const client = await getCognitoClient();
   
+  // Normalize email to lowercase
+  const normalizedEmail = email.toLowerCase();
+  
   try {
     const result = await client.adminGetUser({
       UserPoolId: USER_POOL_ID,
-      Username: email,
+      Username: normalizedEmail,
     }).promise();
     
     return result;
@@ -116,8 +128,11 @@ export async function getCognitoUser(email: string): Promise<any> {
 export async function removeBoardMemberFromCognito(email: string): Promise<void> {
   const client = await getCognitoClient();
   
+  // Normalize email to lowercase
+  const normalizedEmail = email.toLowerCase();
+  
   await client.adminDeleteUser({
     UserPoolId: USER_POOL_ID,
-    Username: email,
+    Username: normalizedEmail,
   }).promise();
 }

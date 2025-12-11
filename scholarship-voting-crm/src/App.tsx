@@ -220,7 +220,7 @@ function MainApp({ user, onSignOut }: MainAppProps) {
     currentView = 'admin';
   }
 
-  const shouldShowDashboard = currentView === 'dashboard' || (currentView === 'voting' && allVotesComplete && !isAdmin);
+  const shouldShowDashboard = currentView === 'dashboard' || (currentView === 'voting' && allVotesComplete && !isAdmin && !applicantId);
 
   if (isLoading) {
     return (
