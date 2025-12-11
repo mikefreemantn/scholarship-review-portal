@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Trash2, Shield, RefreshCw, Eye, EyeOff, Users, Mail, ShieldCheck, Download, FileText, Send } from 'lucide-react';
+import { UserPlus, Trash2, Shield, RefreshCw, Eye, EyeOff, Users, Mail, ShieldCheck, Download, FileText, Send, Presentation } from 'lucide-react';
 import { BoardMember, ApplicantWithStats } from '../types';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -23,6 +23,7 @@ import {
 } from '../services/dynamodb';
 import { EmailManagement } from './EmailManagement';
 import { sendVotingDigest, sendWelcomeEmail } from '../services/sendgrid';
+import { generateMeetingOverviewHTML } from '../services/meetingExport';
 
 interface AdminPanelProps {
   currentUserEmail: string;
@@ -53,6 +54,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [resendingInviteTo, setResendingInviteTo] = useState<string | null>(null);
   const [resetPasswordFor, setResetPasswordFor] = useState<BoardMember | null>(null);
   const [newPassword, setNewPassword] = useState('');
+  const [isGeneratingPPT, setIsGeneratingPPT] = useState(false);
+  const [pptProgress, setPptProgress] = useState<{ current: number; total: number } | null>(null);
 
   useEffect(() => {
     loadBoardMembers();
@@ -441,6 +444,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     doc.save(`applicant-rankings-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
+  // Export meeting overview HTML
+  const handleExportMeetingOverview = async () => {
+    setIsGeneratingPPT(true);
+    setError(null);
+    setSuccess(null);
+    setPptProgress(null);
+
+    try {
+      await generateMeetingOverviewHTML(applicantsWithStats, (current, total) => {
+        setPptProgress({ current, total });
+      });
+      
+      setSuccess('Meeting overview HTML generated successfully! Open the file in your browser and print to PDF or copy to Google Slides.');
+      setPptProgress(null);
+    } catch (err: any) {
+      setError(`Failed to generate meeting overview: ${err.message}`);
+      console.error('Error generating overview:', err);
+    } finally {
+      setIsGeneratingPPT(false);
+    }
+  };
+
   // Send voting digest to a specific board member
   const handleSendDigest = async (member: BoardMember) => {
     setSendingDigestTo(member.email);
@@ -741,7 +766,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <RefreshCw size={20} />
             Applicant Management
           </h3>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleExportResults}
               className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
@@ -755,6 +780,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             >
               <FileText size={18} />
               Export PDF
+            </button>
+            <button
+              onClick={handleExportMeetingOverview}
+              disabled={isGeneratingPPT}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              {isGeneratingPPT ? (
+                <>
+                  <RefreshCw size={18} className="animate-spin" />
+                  {pptProgress ? `Generating ${pptProgress.current}/${pptProgress.total}...` : 'Generating...'}
+                </>
+              ) : (
+                <>
+                  <Presentation size={18} />
+                  Meeting Overview
+                </>
+              )}
             </button>
           </div>
         </div>
