@@ -452,11 +452,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setPptProgress(null);
 
     try {
-      await generateMeetingOverviewHTML(applicantsWithStats, (current, total) => {
-        setPptProgress({ current, total });
+      await generateMeetingOverviewHTML({
+        applicantsWithStats,
+        allVotes,
+        boardMembers,
+        onProgress: (current, total) => {
+          setPptProgress({ current, total });
+        }
       });
       
-      setSuccess('Meeting overview HTML generated successfully! Open the file in your browser and print to PDF or copy to Google Slides.');
+      setSuccess('Meeting overview opened in new tab! You can print to PDF or copy sections as needed.');
       setPptProgress(null);
     } catch (err: any) {
       setError(`Failed to generate meeting overview: ${err.message}`);

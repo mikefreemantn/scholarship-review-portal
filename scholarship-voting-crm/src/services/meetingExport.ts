@@ -1,63 +1,18 @@
-import { ApplicantWithStats } from '../types';
+import { ApplicantWithStats, Vote, BoardMember } from '../types';
 
-async function generateAISummary(applicant: any): Promise<string> {
-  try {
-    const prompt = `Summarize this scholarship applicant's profile in 3-4 concise bullet points for a board meeting presentation. Focus on their key strengths, experiences, and why they're a strong candidate:
-
-Name: ${applicant.firstName} ${applicant.lastName}
-Location: ${applicant.city}, ${applicant.state}
-
-About: ${applicant.aboutYourself}
-
-Why they're applying: ${applicant.whyApply}
-
-Challenge overcome: ${applicant.challengeOrObstacle}
-
-Inspiration: ${applicant.inspiration}
-
-Goals: ${applicant.wishForYourself}
-
-Keep it brief and impactful (3-4 bullet points max).`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a concise summarizer for scholarship board meetings. Create brief, impactful bullet points.',
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.7,
-        max_tokens: 300,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('AI summary failed');
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
-  } catch (error) {
-    console.error('Error generating AI summary:', error);
-    return `• ${applicant.firstName} ${applicant.lastName} from ${applicant.city}, ${applicant.state}\n• Applying for the One More Day scholarship\n• See full application for details`;
-  }
+interface MeetingOverviewProps {
+  applicantsWithStats: ApplicantWithStats[];
+  allVotes: Vote[];
+  boardMembers: BoardMember[];
+  onProgress?: (current: number, total: number) => void;
 }
 
-export async function generateMeetingOverviewHTML(
-  applicantsWithStats: ApplicantWithStats[],
-  onProgress?: (current: number, total: number) => void
-): Promise<void> {
+export async function generateMeetingOverviewHTML({
+  applicantsWithStats,
+  allVotes,
+  boardMembers,
+  onProgress
+}: MeetingOverviewProps): Promise<void> {
   // Sort by average score (highest first)
   const rankedApplicants = [...applicantsWithStats]
     .filter(a => a.totalVotes > 0)
@@ -234,17 +189,25 @@ export async function generateMeetingOverviewHTML(
       onProgress(i + 1, rankedApplicants.length);
     }
 
-    const aiSummary = await generateAISummary(applicant);
     const profileUrl = `https://voting.onemoredayontheatapply.com/voting/${applicant.applicantId}`;
     
-    const whyApplyPreview = applicant.whyApply.substring(0, 200) + (applicant.whyApply.length > 200 ? '...' : '');
-    const challengePreview = applicant.challengeOrObstacle.substring(0, 200) + (applicant.challengeOrObstacle.length > 200 ? '...' : '');
+    // Get individual board member votes
+    const applicantVotes = allVotes.filter(v => v.applicantId === applicant.applicantId);
+    const votesList = boardMembers.map(member => {
+      const vote = applicantVotes.find(v => v.boardMemberEmail === member.email);
+      return `<tr>
+        <td style="padding: 8px; border-bottom: 1px solid #e0e0e0;">${member.name}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #e0e0e0; text-align: center; font-weight: bold; color: ${vote ? '#2d4a3e' : '#999'};">
+          ${vote ? vote.score + '/10' : 'Not voted'}
+        </td>
+      </tr>`;
+    }).join('');
 
     html += `
     <div class="applicant-card ${i > 0 ? 'page-break' : ''}">
       <div class="applicant-header">
         <h2>#${rank} • ${applicant.firstName} ${applicant.lastName}</h2>
-        <div class="score">Score: ${averageScore?.toFixed(1) || 'N/A'}/10 (${totalVotes} votes)</div>
+        <div class="score">Average: ${averageScore?.toFixed(1) || 'N/A'}/10 (${totalVotes} votes)</div>
       </div>
       
       <div class="info-grid">
@@ -254,19 +217,15 @@ export async function generateMeetingOverviewHTML(
           <p>📱 ${applicant.phone}</p>
           <p>📍 ${applicant.address}</p>
           <p>🏙️ ${applicant.city}, ${applicant.state} ${applicant.zipCode}</p>
+          <p><strong>Applied:</strong> ${new Date(applicant.dateApplied).toLocaleDateString()}</p>
         </div>
         
         <div class="info-section">
-          <h3>Application Details</h3>
-          <p><strong>Applied:</strong> ${new Date(applicant.dateApplied).toLocaleDateString()}</p>
-          <p><strong>Contact Preference:</strong> ${applicant.contactPreference}</p>
-          <p><strong>How they heard:</strong> ${applicant.howDidYouHear}</p>
+          <h3>Board Member Votes</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            ${votesList}
+          </table>
         </div>
-      </div>
-      
-      <div class="summary">
-        <h3>🤖 AI Summary</h3>
-        <div style="white-space: pre-wrap;">${aiSummary}</div>
       </div>
       
       <div class="profile-link">
@@ -274,15 +233,39 @@ export async function generateMeetingOverviewHTML(
       </div>
       
       <div class="essays">
-        <h3 style="color: #2d4a3e; margin-bottom: 15px;">Key Essays</h3>
+        <h3 style="color: #2d4a3e; margin-bottom: 15px;">Full Application</h3>
+        
         <div class="essay">
-          <h4>Why applying for this scholarship:</h4>
-          <p>${whyApplyPreview}</p>
+          <h4>About Yourself:</h4>
+          <p>${applicant.aboutYourself}</p>
         </div>
+        
         <div class="essay">
-          <h4>Challenge overcome:</h4>
-          <p>${challengePreview}</p>
+          <h4>Why are you applying for this scholarship?</h4>
+          <p>${applicant.whyApply}</p>
         </div>
+        
+        <div class="essay">
+          <h4>Describe a challenge or obstacle you've overcome:</h4>
+          <p>${applicant.challengeOrObstacle}</p>
+        </div>
+        
+        <div class="essay">
+          <h4>What inspires you?</h4>
+          <p>${applicant.inspiration}</p>
+        </div>
+        
+        <div class="essay">
+          <h4>What do you wish for yourself?</h4>
+          <p>${applicant.wishForYourself}</p>
+        </div>
+        
+        ${applicant.anythingElse ? `
+        <div class="essay">
+          <h4>Anything else you'd like us to know:</h4>
+          <p>${applicant.anythingElse}</p>
+        </div>
+        ` : ''}
       </div>
     </div>
 `;
@@ -294,14 +277,13 @@ export async function generateMeetingOverviewHTML(
 </html>
 `;
 
-  // Create and download the HTML file
+  // Open in new tab instead of downloading
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `Scholarship_Meeting_Overview_${new Date().toISOString().split('T')[0]}.html`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  const newWindow = window.open(url, '_blank');
+  
+  // Clean up the URL after a delay to allow the window to load
+  if (newWindow) {
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
 }
