@@ -37,35 +37,40 @@ export async function generateMeetingOverviewHTML({
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background: #f4f4f4;
+      min-height: 100vh;
+      background-color: #0f1a16;
+      background-image: url('/assets/images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
     .container {
       max-width: 1200px;
       margin: 0 auto;
     }
     .title-page {
-      background: linear-gradient(135deg, #2d4a3e 0%, #1f3329 100%);
+      background: rgba(15, 26, 22, 0.9);
       color: #d4c5a0;
-      padding: 100px 40px;
+      padding: 80px 40px;
       text-align: center;
       border-radius: 12px;
       margin-bottom: 30px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
     }
-    .title-page h1 {
-      font-size: 48px;
-      margin: 0 0 10px 0;
-      letter-spacing: 2px;
+    .title-logo {
+      margin-bottom: 30px;
     }
-    .title-page h2 {
-      font-size: 20px;
-      margin: 0 0 40px 0;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+    .title-logo img {
+      max-width: 420px;
+      width: 100%;
+      height: auto;
+      display: inline-block;
     }
     .title-page h3 {
       font-size: 24px;
-      color: white;
-      margin: 0 0 20px 0;
+      color: #ffffff;
+      margin: 0 0 16px 0;
+      letter-spacing: 1px;
     }
     .title-page p {
       font-size: 16px;
@@ -173,8 +178,9 @@ export async function generateMeetingOverviewHTML({
 <body>
   <div class="container">
     <div class="title-page">
-      <h1>ONE MORE DAY</h1>
-      <h2>On the Appalachian Trail</h2>
+      <div class="title-logo">
+        <img src="/assets/images/toplogo_carved-2.png" alt="One More Day on the Appalachian Trail" />
+      </div>
       <h3>Scholarship Applicant Review</h3>
       <p>${rankedApplicants.length} Candidates • ${new Date().toLocaleDateString()}</p>
     </div>
