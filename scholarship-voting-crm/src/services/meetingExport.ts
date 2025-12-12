@@ -39,7 +39,7 @@ export async function generateMeetingOverviewHTML({
       padding: 20px;
       min-height: 100vh;
       background-color: #0f1a16;
-      background-image: url('/assets/images/background.png');
+      background-image: url('https://voting.onemoredayontheatapply.com/assets/images/goldback-1.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -179,7 +179,7 @@ export async function generateMeetingOverviewHTML({
   <div class="container">
     <div class="title-page">
       <div class="title-logo">
-        <img src="/assets/images/toplogo_carved-2.png" alt="One More Day on the Appalachian Trail" />
+        <img src="https://voting.onemoredayontheatapply.com/assets/images/toplogo_carved-2.png" alt="One More Day on the Appalachian Trail" />
       </div>
       <h3>Scholarship Applicant Review</h3>
       <p>${rankedApplicants.length} Candidates • ${new Date().toLocaleDateString()}</p>
